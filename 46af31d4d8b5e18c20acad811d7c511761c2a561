@@ -16,6 +16,24 @@
       "message": "Hi Sui,\n\nWhy do this and not instead a `git subtree` operation to chop the dbus-top codebase out of openbmc-tools and import it here? I\u0027m not clear how this change progresses us towards the goal of migrating the code to this repo.",
       "revId": "46af31d4d8b5e18c20acad811d7c511761c2a561",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a570d9e6_040e6de0",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000500
+      },
+      "writtenOn": "2023-02-14T06:37:02Z",
+      "side": 1,
+      "message": "Oh..! Thanks for your advice on using `git subtree split`, this is actually my first time using it.\n\nI tested around on my local repositories and was able to push all the change in openbmc-tools/dbus-top to the new repo. Pushing that to Gerrit as-is would result in 5 changes. Is that the desired way to do it, or something else such as squashing all changes into one?",
+      "parentUuid": "551ad7c4_8c45f45d",
+      "revId": "46af31d4d8b5e18c20acad811d7c511761c2a561",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
