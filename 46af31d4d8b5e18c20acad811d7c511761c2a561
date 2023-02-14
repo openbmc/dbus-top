@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "551ad7c4_8c45f45d",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2023-02-14T03:01:06Z",
+      "side": 1,
+      "message": "Hi Sui,\n\nWhy do this and not instead a `git subtree` operation to chop the dbus-top codebase out of openbmc-tools and import it here? I\u0027m not clear how this change progresses us towards the goal of migrating the code to this repo.",
+      "revId": "46af31d4d8b5e18c20acad811d7c511761c2a561",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
