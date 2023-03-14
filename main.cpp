@@ -91,6 +91,7 @@ void InitColorPairs()
 int DrawTextWithWidthLimit(WINDOW* win, std::string txt, int y, int x,
                            int width, const std::string& delimiters)
 {
+    std::ignore = delimiters;
     int ret = 0;
     std::string curr_word, curr_line;
     while (txt.empty() == false)
@@ -225,7 +226,7 @@ int UserInputThread()
         {
             switch (c)
             {
-                case '\e': // 27 in dec, 0x1B in hex, escape key
+                case 0x1B: // 27 in dec, 0x1B in hex, escape key
                 {
                     getch();
                     c = getch();
@@ -243,7 +244,7 @@ int UserInputThread()
                         case 'D':
                             curr_view->OnKeyDown("left");
                             break;
-                        case '\e':
+                        case 0x1B:
                             curr_view->OnKeyDown("escape");
                             break;
                     }
@@ -353,6 +354,8 @@ void ReinitializeUI()
 
 int main(int argc, char** argv)
 {
+    std::ignore = argc;
+    std::ignore = argv;
     int r = AcquireBus(&g_bus);
     if (r <= 0)
     {

@@ -17,8 +17,8 @@
 #include "views.hpp"
 
 ArrowKeyNavigationMenu::ArrowKeyNavigationMenu(DBusTopWindow* view) :
-    win_(view->win), parent_(view), idx0_(INVALID), idx1_(INVALID),
-    h_padding_(2), col_width_(15), h_spacing_(2), choice_(INVALID)
+    win_(view->win), h_padding_(2), col_width_(15), h_spacing_(2),
+    idx0_(INVALID), idx1_(INVALID), choice_(INVALID), parent_(view)
 {}
 
 void ArrowKeyNavigationMenu::do_Render(bool is_column_major)
@@ -71,7 +71,7 @@ void ArrowKeyNavigationMenu::do_Render(bool is_column_major)
                 wattrset(win_, A_REVERSE);
             }
             std::string s = items_[idx];
-            while (s.size() < col_width_)
+            while (s.size() < static_cast<size_t>(col_width_))
             {
                 s.push_back(' ');
             }
@@ -283,11 +283,14 @@ void ArrowKeyNavigationMenu::SetChoiceAndConstrain(int c)
         choice_ = INVALID;
         return;
     }
-    if (c < 0)
-        c = 0;
-    if (c >= static_cast<int>(items_.size()))
+    if (static_cast<size_t>(c) >= items_.size())
     {
-        c = static_cast<int>(items_.size() - 1);
+        c = items_.size() - 1;
+    }
+    if (c < 0)
+    {
+        choice_ = 0;
+        return;
     }
     choice_ = c;
 }
@@ -299,7 +302,7 @@ void ArrowKeyNavigationMenu::AddItem(const std::string& s)
 
 bool ArrowKeyNavigationMenu::RemoveHighlightedItem(std::string* ret)
 {
-    if (choice_ < 0 || choice_ >= items_.size())
+    if (choice_ < 0 || static_cast<size_t>(choice_) >= items_.size())
         return false;
     std::string r = items_[choice_];
     items_.erase(items_.begin() + choice_);
@@ -309,7 +312,7 @@ bool ArrowKeyNavigationMenu::RemoveHighlightedItem(std::string* ret)
     }
     else
     {
-        if (choice_ >= items_.size())
+        if (choice_ > 0 && static_cast<size_t>(choice_) >= items_.size())
         {
             choice_ = items_.size() - 1;
         }
