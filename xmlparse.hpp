@@ -58,7 +58,7 @@ class XMLNode
     {
         fields["name"] = n;
     }
-    
+
     std::vector<std::string> GetChildNodeNames();
     std::vector<std::string> GetInterfaceNames();
 };
