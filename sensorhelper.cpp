@@ -22,6 +22,7 @@
 #include <functional>
 #include <sstream>
 #include <string>
+#include <tuple>
 #include <vector>
 
 extern SensorSnapshot* g_sensor_snapshot;
@@ -65,6 +66,7 @@ bool IsSensorObjectPath(const std::string& s)
 bool IsSensorObjectPathWithAssociation(const std::string& s,
                                        std::string* sensor_obj_path)
 {
+    std::ignore = sensor_obj_path;
     std::vector<std::string> sections = MySplit(s);
     if (sections.size() == 6)
     {
@@ -104,6 +106,8 @@ std::vector<std::string> FindAllObjectPathsForService(
     std::function<void(const std::string&, const std::vector<std::string>&)>
         on_interface_cb)
 {
+    std::ignore = service;
+    std::ignore = on_interface_cb;
     // Not available for PCAP replay, only valid with actual DBus capture
     assert(false);
 }

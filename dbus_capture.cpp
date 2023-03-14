@@ -35,7 +35,9 @@ namespace dbus_top_analyzer
 } // namespace dbus_top_analyzer
 
 static void TrackMessage(sd_bus_message* m)
-{}
+{
+    std::ignore = m;
+}
 // Obtain a Monitoring DBus connection
 int AcquireBus(sd_bus** ret)
 {
