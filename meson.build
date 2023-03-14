@@ -14,15 +14,11 @@
 
 project('dbus-top', 'cpp',
     version: '0.1',
-    default_options: 
+    default_options:
     [
         'cpp_std=c++17',
     ],
 )
-
-cmake = import('cmake')
-fmt_proj = cmake.subproject('fmt')
-fmt_dep = fmt_proj.dependency('fmt')
 
 bindir = get_option('prefix') / get_option('bindir')
 executable('dbus-top',
@@ -41,7 +37,7 @@ executable('dbus-top',
         dependency('sdbusplus'),
         dependency('ncurses'),
         dependency('threads'),
-        fmt_dep
+        dependency('fmt')
     ],
     install: true,
     install_dir: bindir
