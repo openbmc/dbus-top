@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2fe57c6b_8682e072",
+        "filename": "dbus_capture.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2023-03-14T16:27:58Z",
+      "side": 1,
+      "message": "I don\u0027t typically see this pattern in our code.  Generally `std::ignore` is used for tie or return values which are unused.\n\nTypically we either see the name removed (ie. delete the \u0027m\u0027) or `[[maybe_unused]]` added.\n\nSince you are the maintainer here, you\u0027re welcome to do what you prefer, but I think this pattern would not be natural to most contributors coming from other areas of the codebase.",
+      "revId": "bfa11ed9f7eb61f187143d1b0b9136ff33eca412",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
