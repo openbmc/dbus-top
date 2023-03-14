@@ -87,6 +87,7 @@ class SummaryView : public DBusTopWindow
     void Render() override;
     void OnResize(int win_w, int win_h) override
     {
+        std::ignore = win_h;
         rect.h = 8;
         rect.w = win_w;
         rect.x = 0;
@@ -96,7 +97,9 @@ class SummaryView : public DBusTopWindow
 
     void UpdateDBusTopStatistics(DBusTopStatistics* stat);
     void OnKeyDown(const std::string& key) override
-    {}
+    {
+        std::ignore = key;
+    }
     std::string GetStatusString() override
     {
         return "Summary View";
@@ -521,7 +524,9 @@ class FooterView : public DBusTopWindow
     }
 
     void OnKeyDown(const std::string& key) override
-    {}
+    {
+        std::ignore = key;
+    }
     void OnResize(int win_w, int win_h) override
     {
         rect.h = 1;

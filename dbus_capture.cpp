@@ -35,7 +35,9 @@ extern Histogram<float> g_mc_time_histogram;
 } // namespace dbus_top_analyzer
 
 static void TrackMessage(sd_bus_message* m)
-{}
+{
+    std::ignore = m;
+}
 // Obtain a Monitoring DBus connection
 int AcquireBus(sd_bus** ret)
 {
