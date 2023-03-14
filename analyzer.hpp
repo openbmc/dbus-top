@@ -114,7 +114,7 @@ class DBusTopStatistics
         num_error_ = 0;
         stats_.clear();
     }
-    
+
     void SetSortFieldsAndReset(const std::vector<DBusTopSortField>& f)
     {
         num_messages_ = 0;
@@ -166,12 +166,12 @@ int GetSummaryIntervalInMillises();
 // typedef void (*SetDBusTopConnection)(const char* conn);
 namespace dbus_top_analyzer
 {
-    void Process();
-    void Finish();
-    typedef void (*DBusTopStatisticsCallback)(DBusTopStatistics*,
-                                            Histogram<float>*);
-    void SetDBusTopStatisticsCallback(DBusTopStatisticsCallback cb);
-    void AnalyzerThread();
-    // Methods for sending Object Mapper queries
-    void ListAllSensors();
+void Process();
+void Finish();
+typedef void (*DBusTopStatisticsCallback)(DBusTopStatistics*,
+                                          Histogram<float>*);
+void SetDBusTopStatisticsCallback(DBusTopStatisticsCallback cb);
+void AnalyzerThread();
+// Methods for sending Object Mapper queries
+void ListAllSensors();
 } // namespace dbus_top_analyzer

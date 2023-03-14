@@ -51,34 +51,34 @@ int maxx, maxy, halfx, halfy;
 
 void ActivateWindowA()
 {
-    g_views[0]->visible_=true;
-    g_views[0]->maximize_=true;
-    g_views[1]->visible_=false;
-    g_views[2]->visible_=false;
+    g_views[0]->visible_ = true;
+    g_views[0]->maximize_ = true;
+    g_views[1]->visible_ = false;
+    g_views[2]->visible_ = false;
 }
 
 void ActivateWindowB()
 {
-    g_views[1]->visible_=true;
-    g_views[1]->maximize_=true;
-    g_views[0]->visible_=false;
-    g_views[2]->visible_=false;
+    g_views[1]->visible_ = true;
+    g_views[1]->maximize_ = true;
+    g_views[0]->visible_ = false;
+    g_views[2]->visible_ = false;
 }
 void ActivateWindowC()
 {
-    g_views[2]->visible_=true;
-    g_views[2]->maximize_=true;
-    g_views[0]->visible_=false;
-    g_views[1]->visible_=false;
+    g_views[2]->visible_ = true;
+    g_views[2]->maximize_ = true;
+    g_views[0]->visible_ = false;
+    g_views[1]->visible_ = false;
 }
 void ActivateAllWindows()
 {
     g_views[0]->maximize_ = false;
-    g_views[1]->maximize_=false;
-    g_views[2]->maximize_=false;
-    g_views[0]->visible_=true;
-    g_views[1]->visible_=true;
-    g_views[2]->visible_= true;
+    g_views[1]->maximize_ = false;
+    g_views[2]->maximize_ = false;
+    g_views[0]->visible_ = true;
+    g_views[1]->visible_ = true;
+    g_views[2]->visible_ = true;
 }
 
 void InitColorPairs()
@@ -128,8 +128,9 @@ void UpdateWindowSizes()
     for (DBusTopWindow* v : g_views)
     {
         v->OnResize(maxx, maxy);
-        if(v->maximize_){
-            v->rect={0,0,maxx,maxy-MARGIN_BOTTOM};
+        if (v->maximize_)
+        {
+            v->rect = {0, 0, maxx, maxy - MARGIN_BOTTOM};
             v->UpdateWindowSizeAndPosition();
         }
     }

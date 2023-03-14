@@ -128,7 +128,7 @@ class Histogram
             return 0;
         return buckets_[idx];
     }
-    
+
     void Assign(Histogram<ValueType>* out)
     {
         out->num_entries_ = num_entries_;
@@ -172,7 +172,7 @@ class Histogram
     {
         return num_entries_ == 0;
     }
-    
+
     int num_entries_;
     std::vector<ValueType> samples_;
     int num_low_outliers_, num_high_outliers_;
