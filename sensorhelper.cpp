@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "sensorhelper.hpp"
+
 #include "main.hpp"
 
 #include <unistd.h>
@@ -62,8 +63,8 @@ bool IsSensorObjectPath(const std::string& s)
 }
 
 // Example: /xyz/openbmc_project/sensors/temperature/powerseq_temp/chassis
-bool IsSensorObjectPathWithAssociation(const std::string& s,
-                                       std::string* sensor_obj_path)
+bool IsSensorObjectPathWithAssociation(
+    const std::string& s, [[maybe_unused]] std::string* sensor_obj_path)
 {
     std::vector<std::string> sections = MySplit(s);
     if (sections.size() == 6)
@@ -100,8 +101,9 @@ bool IsUniqueName(const std::string& x)
 }
 
 std::vector<std::string> FindAllObjectPathsForService(
-    const std::string& service,
-    std::function<void(const std::string&, const std::vector<std::string>&)>
+    [[maybe_unused]] const std::string& service,
+    [[maybe_unused]] std::function<void(const std::string&,
+                                        const std::vector<std::string>&)>
         on_interface_cb)
 {
     // Not available for PCAP replay, only valid with actual DBus capture

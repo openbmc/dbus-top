@@ -21,6 +21,7 @@
 #include "sensorhelper.hpp"
 
 #include <ncurses.h>
+
 #include <string>
 #include <vector>
 constexpr int MARGIN_BOTTOM = 1;
@@ -84,7 +85,7 @@ class SummaryView : public DBusTopWindow
     SummaryView() : DBusTopWindow()
     {}
     void Render() override;
-    void OnResize(int win_w, int win_h) override
+    void OnResize(int win_w, [[maybe_unused]] int win_h) override
     {
         rect.h = 8;
         rect.w = win_w;
@@ -94,7 +95,7 @@ class SummaryView : public DBusTopWindow
     }
 
     void UpdateDBusTopStatistics(DBusTopStatistics* stat);
-    void OnKeyDown(const std::string& key) override
+    void OnKeyDown([[maybe_unused]] const std::string& key) override
     {}
     std::string GetStatusString() override
     {
@@ -430,8 +431,8 @@ class DBusStatListView : public DBusTopWindow
     };
     SortOrder sort_order_;
 
-    int disp_row_idx_; // From which row to start displaying? (essentially a
-                       // vertical scroll bar)
+    int disp_row_idx_;    // From which row to start displaying? (essentially a
+                          // vertical scroll bar)
     int last_choices_[2]; // Last choice index on either side
     enum MenuState
     {
@@ -451,7 +452,7 @@ class DBusStatListView : public DBusTopWindow
         menu2_->win_ = win;
         UpdateWindowSizeAndPosition();
     }
-    
+
   private:
     void SetMenuState(MenuState s)
     {
@@ -519,7 +520,7 @@ class FooterView : public DBusTopWindow
         selectable_ = false; // Cannot be selected by the tab key
     }
 
-    void OnKeyDown(const std::string& key) override
+    void OnKeyDown([[maybe_unused]] const std::string& key) override
     {}
     void OnResize(int win_w, int win_h) override
     {
@@ -535,5 +536,4 @@ class FooterView : public DBusTopWindow
     {
         return "";
     }
-
 };
