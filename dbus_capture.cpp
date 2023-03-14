@@ -14,8 +14,8 @@
 
 #include "analyzer.hpp"
 #include "histogram.hpp"
-#include "sensorhelper.hpp"
 #include "main.hpp"
+#include "sensorhelper.hpp"
 
 #include <ncurses.h>
 #include <stdlib.h>
@@ -30,8 +30,8 @@ static std::unordered_map<uint64_t, uint64_t> in_flight_methodcalls;
 
 namespace dbus_top_analyzer
 {
-    extern DBusTopStatistics g_dbus_statistics;
-    extern Histogram<float> g_mc_time_histogram;
+extern DBusTopStatistics g_dbus_statistics;
+extern Histogram<float> g_mc_time_histogram;
 } // namespace dbus_top_analyzer
 
 static void TrackMessage(sd_bus_message* m)
@@ -188,7 +188,7 @@ void DbusCaptureThread()
             }
             // This is for the bottom-right window
             dbus_top_analyzer::g_dbus_statistics.OnNewDBusMessage(
-            sender_uniq.c_str(), dest_uniq.c_str(), interface, path, member,
+                sender_uniq.c_str(), dest_uniq.c_str(), interface, path, member,
                 type, m);
             sd_bus_message_unref(m);
         }

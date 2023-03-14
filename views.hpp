@@ -21,6 +21,7 @@
 #include "sensorhelper.hpp"
 
 #include <ncurses.h>
+
 #include <string>
 #include <vector>
 constexpr int MARGIN_BOTTOM = 1;
@@ -430,8 +431,8 @@ class DBusStatListView : public DBusTopWindow
     };
     SortOrder sort_order_;
 
-    int disp_row_idx_; // From which row to start displaying? (essentially a
-                       // vertical scroll bar)
+    int disp_row_idx_;    // From which row to start displaying? (essentially a
+                          // vertical scroll bar)
     int last_choices_[2]; // Last choice index on either side
     enum MenuState
     {
@@ -451,7 +452,7 @@ class DBusStatListView : public DBusTopWindow
         menu2_->win_ = win;
         UpdateWindowSizeAndPosition();
     }
-    
+
   private:
     void SetMenuState(MenuState s)
     {
@@ -535,5 +536,4 @@ class FooterView : public DBusTopWindow
     {
         return "";
     }
-
 };

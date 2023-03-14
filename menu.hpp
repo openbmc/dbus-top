@@ -119,4 +119,3 @@ class ArrowKeyNavigationMenu
     DBusTopWindow* parent_;
     Order order;
 };
-

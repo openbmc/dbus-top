@@ -13,10 +13,13 @@
 // limitations under the License.
 
 #include "views.hpp"
+
 #include "bargraph.hpp"
 #include "histogram.hpp"
 #include "menu.hpp"
+
 #include <string.h>
+
 #include <algorithm>
 
 extern SensorSnapshot* g_sensor_snapshot;
@@ -29,7 +32,7 @@ extern const int FieldPreferredWidths[];
 
 namespace dbus_top_analyzer
 {
-    extern DBusTopStatistics g_dbus_statistics;
+extern DBusTopStatistics g_dbus_statistics;
 }
 
 // Linear interpolation
@@ -412,9 +415,12 @@ void SensorDetailView::Render()
                     wattrset(win, A_REVERSE);
                 }
                 std::string s = sensor_ids_[idx];
-                if (static_cast<int>(s.size()) > col_width) {
+                if (static_cast<int>(s.size()) > col_width)
+                {
                     s = s.substr(0, col_width - 2) + "..";
-                } else {
+                }
+                else
+                {
                     while (static_cast<int>(s.size()) < col_width)
                     {
                         s.push_back(' ');
@@ -541,7 +547,7 @@ DBusStatListView::DBusStatListView() : DBusTopWindow()
     }
     for (int i = 0; i < N; i++)
     {
-    const std::string s = FieldNames[i];
+        const std::string s = FieldNames[i];
         if (inactive_fields.count(s) > 0)
         {
             menu1_->AddItem(s);
@@ -551,7 +557,7 @@ DBusStatListView::DBusStatListView() : DBusTopWindow()
             menu2_->AddItem(s);
         }
     }
-    
+
     curr_menu_state_ = LeftSide;
     menu_h_ = 5;
     menu_w_ = 24; // Need at least 2*padding + 15 for enough space, see menu.hpp
@@ -980,14 +986,14 @@ void DBusStatListView::Render()
         int idx0 = 0; // indexing into the std::vector<string> of each row
         std::vector<std::string> row;
 
-        StringOrFloat sort_key; // The key used for sorting
+        StringOrFloat sort_key;         // The key used for sorting
         for (int j = 0; j < ncols; j++) // one column in the row
         {
             DBusTopSortField field = fields[j];
             // Populate the content of stats_snapshot_staged
 
             StringOrFloat sof; // Represents this column
-            
+
             // When we haven't used up all
             if (idx0 < static_cast<int>(itr->first.size()))
             {
@@ -1081,7 +1087,7 @@ void DBusStatListView::Render()
         stats_snapshot_staged.push_back(std::make_pair(sort_key, row));
         itr++;
     }
-    
+
     // Sort the "staged snapshot" using the sort_key, using different functions
     // depending on whether sort key is numeric or string
     if (is_sort_key_numeric)
@@ -1102,7 +1108,7 @@ void DBusStatListView::Render()
                 return a.first.s < b.first.s;
             });
     }
-    
+
     if (sort_order_ == Descending)
     {
         std::reverse(stats_snapshot_staged.begin(),
@@ -1114,9 +1120,9 @@ void DBusStatListView::Render()
     const int y0 = 2, y1 = y0 + num_lines_shown - 1;
     // Key is sender, destination, interface, path, etc
     for (int i = 0, shown = 0;
-        i + disp_row_idx_ < static_cast<int>(stats_snapshot_staged.size()) &&
-        shown < num_lines_shown;
-        i++, shown++)
+         i + disp_row_idx_ < static_cast<int>(stats_snapshot_staged.size()) &&
+         shown < num_lines_shown;
+         i++, shown++)
     {
         std::string s;
         int x = 0;
