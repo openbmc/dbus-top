@@ -21,6 +21,7 @@
 #include "sensorhelper.hpp"
 
 #include <ncurses.h>
+
 #include <string>
 #include <vector>
 constexpr int MARGIN_BOTTOM = 1;
@@ -37,8 +38,7 @@ class DBusTopWindow
         maximize_ = false;
     }
 
-    virtual ~DBusTopWindow()
-    {}
+    virtual ~DBusTopWindow() {}
     virtual void OnKeyDown(const std::string& key) = 0;
     virtual void Render() = 0;
     virtual void OnResize(int win_w, int win_h) = 0;
@@ -81,8 +81,7 @@ class DBusTopWindow
 class SummaryView : public DBusTopWindow
 {
   public:
-    SummaryView() : DBusTopWindow()
-    {}
+    SummaryView() : DBusTopWindow() {}
     void Render() override;
     void OnResize(int win_w, int win_h) override
     {
@@ -94,8 +93,7 @@ class SummaryView : public DBusTopWindow
     }
 
     void UpdateDBusTopStatistics(DBusTopStatistics* stat);
-    void OnKeyDown(const std::string& key) override
-    {}
+    void OnKeyDown(const std::string& key) override {}
     std::string GetStatusString() override
     {
         return "Summary View";
@@ -430,8 +428,8 @@ class DBusStatListView : public DBusTopWindow
     };
     SortOrder sort_order_;
 
-    int disp_row_idx_; // From which row to start displaying? (essentially a
-                       // vertical scroll bar)
+    int disp_row_idx_;    // From which row to start displaying? (essentially a
+                          // vertical scroll bar)
     int last_choices_[2]; // Last choice index on either side
     enum MenuState
     {
@@ -451,7 +449,7 @@ class DBusStatListView : public DBusTopWindow
         menu2_->win_ = win;
         UpdateWindowSizeAndPosition();
     }
-    
+
   private:
     void SetMenuState(MenuState s)
     {
@@ -519,8 +517,7 @@ class FooterView : public DBusTopWindow
         selectable_ = false; // Cannot be selected by the tab key
     }
 
-    void OnKeyDown(const std::string& key) override
-    {}
+    void OnKeyDown(const std::string& key) override {}
     void OnResize(int win_w, int win_h) override
     {
         rect.h = 1;
@@ -535,5 +532,4 @@ class FooterView : public DBusTopWindow
     {
         return "";
     }
-
 };

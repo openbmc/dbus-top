@@ -202,8 +202,8 @@ void ArrowKeyNavigationMenu::MoveCursorAlongSecondaryAxis(int delta)
         }
         return;
     }
-    const int nrows =
-        (order == ColumnMajor) ? DispEntriesPerColumn() : DispEntriesPerRow();
+    const int nrows = (order == ColumnMajor) ? DispEntriesPerColumn()
+                                             : DispEntriesPerRow();
     const int tot_columns = (N - 1) / nrows + 1;
     const int num_rows_last_column = N - nrows * (tot_columns - 1);
     int y = choice_ % nrows, x = choice_ / nrows;

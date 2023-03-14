@@ -25,8 +25,7 @@ class XMLNode
     std::map<std::string, std::string> fields;
     std::vector<XMLNode*> children;
     std::vector<XMLNode*> interfaces;
-    XMLNode(const std::string& t) : tag(t)
-    {}
+    XMLNode(const std::string& t) : tag(t) {}
 
     void AddChild(XMLNode* x)
     {
@@ -58,7 +57,7 @@ class XMLNode
     {
         fields["name"] = n;
     }
-    
+
     std::vector<std::string> GetChildNodeNames();
     std::vector<std::string> GetInterfaceNames();
 };

@@ -105,7 +105,6 @@ class DBusConnectionSnapshot
         return nullptr;
     }
 
-
     // Only when service is known (during playback)
     void AddConnection(const std::string& _s)
     {
@@ -117,8 +116,8 @@ class DBusConnectionSnapshot
                        const std::string& _cmd, const std::string& _unit,
                        int _pid)
     {
-        DBusConnection* cxn =
-            new DBusConnection(_s, _connection, _cmd, _unit, _pid);
+        DBusConnection* cxn = new DBusConnection(_s, _connection, _cmd, _unit,
+                                                 _pid);
         connections_.push_back(cxn);
         unique_name_to_cxn[_connection] = cxn;
     }
@@ -156,7 +155,6 @@ class DBusConnectionSnapshot
         }
         return service;
     }
-
 };
 
 // Each sensor might have different units, for example current and voltage
@@ -293,7 +291,7 @@ class SensorSnapshot
         Sensor* s = FindOrCreateSensorByServiceAndObject(service, object);
         s->visibility_flags_.set(VISIBILITY_OBJECT_MAPPER);
     }
-    
+
     // This sensor is visible from Hwmon
     void SetSensorVisibleFromHwmon(const std::string& service,
                                    const std::string& object)
