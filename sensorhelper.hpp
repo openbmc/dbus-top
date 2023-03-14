@@ -116,8 +116,8 @@ class DBusConnectionSnapshot
                        const std::string& _cmd, const std::string& _unit,
                        int _pid)
     {
-        DBusConnection* cxn =
-            new DBusConnection(_s, _connection, _cmd, _unit, _pid);
+        DBusConnection* cxn = new DBusConnection(_s, _connection, _cmd, _unit,
+                                                 _pid);
         connections_.push_back(cxn);
         unique_name_to_cxn[_connection] = cxn;
     }

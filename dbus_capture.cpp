@@ -34,8 +34,7 @@ extern DBusTopStatistics g_dbus_statistics;
 extern Histogram<float> g_mc_time_histogram;
 } // namespace dbus_top_analyzer
 
-static void TrackMessage([[maybe_unused]] sd_bus_message* m)
-{}
+static void TrackMessage([[maybe_unused]] sd_bus_message* m) {}
 // Obtain a Monitoring DBus connection
 int AcquireBus(sd_bus** ret)
 {

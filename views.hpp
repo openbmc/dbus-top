@@ -38,8 +38,7 @@ class DBusTopWindow
         maximize_ = false;
     }
 
-    virtual ~DBusTopWindow()
-    {}
+    virtual ~DBusTopWindow() {}
     virtual void OnKeyDown(const std::string& key) = 0;
     virtual void Render() = 0;
     virtual void OnResize(int win_w, int win_h) = 0;
@@ -82,8 +81,7 @@ class DBusTopWindow
 class SummaryView : public DBusTopWindow
 {
   public:
-    SummaryView() : DBusTopWindow()
-    {}
+    SummaryView() : DBusTopWindow() {}
     void Render() override;
     void OnResize(int win_w, [[maybe_unused]] int win_h) override
     {
@@ -95,8 +93,7 @@ class SummaryView : public DBusTopWindow
     }
 
     void UpdateDBusTopStatistics(DBusTopStatistics* stat);
-    void OnKeyDown([[maybe_unused]] const std::string& key) override
-    {}
+    void OnKeyDown([[maybe_unused]] const std::string& key) override {}
     std::string GetStatusString() override
     {
         return "Summary View";
@@ -520,8 +517,7 @@ class FooterView : public DBusTopWindow
         selectable_ = false; // Cannot be selected by the tab key
     }
 
-    void OnKeyDown([[maybe_unused]] const std::string& key) override
-    {}
+    void OnKeyDown([[maybe_unused]] const std::string& key) override {}
     void OnResize(int win_w, int win_h) override
     {
         rect.h = 1;

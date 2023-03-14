@@ -19,8 +19,6 @@
 struct Rect
 {
     int x, y, w, h; // X, Y, Width, Height
-    Rect(int _x, int _y, int _w, int _h) : x(_x), y(_y), w(_w), h(_h)
-    {}
-    Rect() : x(0), y(0), w(1), h(1)
-    {}
+    Rect(int _x, int _y, int _w, int _h) : x(_x), y(_y), w(_w), h(_h) {}
+    Rect() : x(0), y(0), w(1), h(1) {}
 };

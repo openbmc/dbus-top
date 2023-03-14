@@ -597,8 +597,8 @@ void DBusTopStatistics::OnNewDBusMessage(const char* sender,
         sd_bus_message_get_reply_cookie(m, &reply_serial);
         if (in_flight_methodcalls.count(reply_serial) > 0)
         {
-            float dt_usec =
-                Microseconds() - in_flight_methodcalls[reply_serial];
+            float dt_usec = Microseconds() -
+                            in_flight_methodcalls[reply_serial];
             in_flight_methodcalls.erase(reply_serial);
             dbus_top_analyzer::g_mc_time_histogram.AddSample(dt_usec);
 
