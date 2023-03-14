@@ -16,6 +16,24 @@
       "message": "@Sui Chen, Do you have any idea on such build failure? It still fail after fixing all the clang format issues.",
       "revId": "6f5f443a38bca4d85e5fbda1aca76d65313d1dda",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e0a4e405_8e355263",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000218
+      },
+      "writtenOn": "2023-03-14T04:51:16Z",
+      "side": 1,
+      "message": "BTW: I could pass the build with bb file under openbmc/openbmc locally.",
+      "parentUuid": "92077cb7_6864a111",
+      "revId": "6f5f443a38bca4d85e5fbda1aca76d65313d1dda",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
