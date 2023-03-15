@@ -16,6 +16,24 @@
       "message": "I don\u0027t typically see this pattern in our code.  Generally `std::ignore` is used for tie or return values which are unused.\n\nTypically we either see the name removed (ie. delete the \u0027m\u0027) or `[[maybe_unused]]` added.\n\nSince you are the maintainer here, you\u0027re welcome to do what you prefer, but I think this pattern would not be natural to most contributors coming from other areas of the codebase.",
       "revId": "bfa11ed9f7eb61f187143d1b0b9136ff33eca412",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "67b29f55_1105b0cf",
+        "filename": "dbus_capture.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1000500
+      },
+      "writtenOn": "2023-03-15T08:24:04Z",
+      "side": 1,
+      "message": "I agree it is good to follow the patterns seen in other OpenBMC code repositories, removed usage of `std::ignore` and am now using `[[maybe_unused]]`.",
+      "parentUuid": "2fe57c6b_8682e072",
+      "revId": "bfa11ed9f7eb61f187143d1b0b9136ff33eca412",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
