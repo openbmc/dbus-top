@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ab83f312_08b59efc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000218
+      },
+      "writtenOn": "2023-03-16T04:59:43Z",
+      "side": 1,
+      "message": "According to the failure message, it is clang issue. \nIt is fixed by below patch\nhttps://gerrit.openbmc.org/c/openbmc/dbus-top/+/61639",
+      "revId": "e2dead473b73371272a31e0a39ce6fc06dafc237",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
