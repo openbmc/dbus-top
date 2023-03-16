@@ -16,6 +16,24 @@
       "message": "It blocks the below patch to pass CI build.",
       "revId": "dfb0cd985858cb257ce4cd4b8255b91ccfd760de",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4edb937c_1246f043",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000218
+      },
+      "writtenOn": "2023-03-16T05:04:01Z",
+      "side": 1,
+      "message": "https://gerrit.openbmc.org/c/openbmc/dbus-top/+/61638",
+      "parentUuid": "3a3fa5dc_247a6de5",
+      "revId": "dfb0cd985858cb257ce4cd4b8255b91ccfd760de",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
