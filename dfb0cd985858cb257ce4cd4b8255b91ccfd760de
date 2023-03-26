@@ -34,6 +34,23 @@
       "parentUuid": "3a3fa5dc_247a6de5",
       "revId": "dfb0cd985858cb257ce4cd4b8255b91ccfd760de",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "dc68727d_47c07d32",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000500
+      },
+      "writtenOn": "2023-03-26T20:46:23Z",
+      "side": 1,
+      "message": "+2 as suggested on discussion on Discord.",
+      "revId": "dfb0cd985858cb257ce4cd4b8255b91ccfd760de",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
