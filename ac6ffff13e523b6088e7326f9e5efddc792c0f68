@@ -22,6 +22,30 @@
       },
       "revId": "ac6ffff13e523b6088e7326f9e5efddc792c0f68",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bac73848_f94ad619",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000500
+      },
+      "writtenOn": "2023-04-19T18:00:25Z",
+      "side": 1,
+      "message": "Sorry for the confusion, updated the change to remove dbus_top_recipe.bb.",
+      "parentUuid": "46019166_d81cf484",
+      "range": {
+        "startLine": 7,
+        "startChar": 17,
+        "endLine": 7,
+        "endChar": 51
+      },
+      "revId": "ac6ffff13e523b6088e7326f9e5efddc792c0f68",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
