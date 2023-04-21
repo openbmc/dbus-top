@@ -29,6 +29,8 @@ extern Histogram<float>* g_histogram;
 extern DBusTopWindow* g_current_active_view;
 extern const std::string FieldNames[];
 extern const int FieldPreferredWidths[];
+extern bool g_sensor_update_thread_active;
+extern std::string g_snapshot_update_bus_cxn;
 
 namespace dbus_top_analyzer
 {
@@ -494,6 +496,78 @@ void SensorDetailView::Render()
                          sensor->ObjectPath().c_str());
                 y += DrawTextWithWidthLimit(win, buf, y, x, w, "/");
                 y++;
+
+                // TODO: can cache in and out & only update when there are user
+                // UI actions
+                std::map<std::string, std::set<std::string>> in, out;
+                g_sensor_snapshot->FindAssociationEndpoints(
+                    sensor->ObjectPath(), &out, &in);
+
+                y++;
+                mvwprintw(win, y, x, "Association status:");
+
+                if (out.size() > 0)
+                {
+                    y++;
+                    int nforward = 0;
+                    for (const auto& [k, v] : out)
+                    {
+                        nforward += int(v.size());
+                    }
+                    mvwprintw(win, y, x,
+                              "Used as Forward vertex %d times:", nforward);
+                    y++;
+                    int idx = 0;
+                    for (const auto& [k, v] : out)
+                    {
+                        idx++;
+                        snprintf(buf, sizeof(buf), "%d. %s (%zu)", idx,
+                                 k.c_str(), v.size());
+                        y += DrawTextWithWidthLimit(win, buf, y, x, w, "/");
+                        for (const std::string& entry : v)
+                        {
+                            y += DrawTextWithWidthLimit(win, entry, y, x + 2,
+                                                        w - 2, "/");
+                        }
+                    }
+                }
+                else
+                {
+                    y++;
+                    mvwprintw(win, y, x, "Not used as forward vertex");
+                    y++;
+                }
+
+                if (in.size() > 0)
+                {
+                    y++;
+                    int nbackward = 0;
+                    for (const auto& [k, v] : in)
+                    {
+                        nbackward += int(v.size());
+                    }
+                    mvwprintw(win, y, x,
+                              "Used as reverse vertex %d times:", nbackward);
+                    y++;
+                    int idx = 0;
+                    for (const auto& [k, v] : in)
+                    {
+                        idx++;
+                        snprintf(buf, sizeof(buf), "%d. %s (%zu)", idx,
+                                 k.c_str(), v.size());
+                        y += DrawTextWithWidthLimit(win, buf, y, x, w, "/");
+                        for (const std::string& entry : v)
+                        {
+                            y += DrawTextWithWidthLimit(win, entry, y, x + 2,
+                                                        w - 2, "/");
+                        }
+                    }
+                }
+                else
+                {
+                    y++;
+                    mvwprintw(win, y, x, "Not used as reverse vertex");
+                }
             }
         }
         else
@@ -1097,7 +1171,7 @@ void DBusStatListView::Render()
             [](const std::pair<StringOrFloat, std::vector<std::string>>& a,
                const std::pair<StringOrFloat, std::vector<std::string>>& b) {
             return a.first.f < b.first.f;
-            });
+        });
     }
     else
     {
@@ -1106,7 +1180,7 @@ void DBusStatListView::Render()
             [](const std::pair<StringOrFloat, std::vector<std::string>>& a,
                const std::pair<StringOrFloat, std::vector<std::string>>& b) {
             return a.first.s < b.first.s;
-            });
+        });
     }
 
     if (sort_order_ == Descending)
@@ -1237,6 +1311,8 @@ void FooterView::Render()
         help_info = g_current_active_view->GetStatusString();
     }
     mvwaddstr(win, 0, 1, date_time);
+    mvwaddstr(win, 0, 27, "                                           ");
+    mvwaddstr(win, 0, 27, status_string_.c_str());
     mvwaddstr(win, 0, rect.w - int(help_info.size()) - 1, help_info.c_str());
     wrefresh(win);
 }

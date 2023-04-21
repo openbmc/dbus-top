@@ -24,6 +24,9 @@
 #include <string>
 #include <vector>
 
+class DBusConnectionSnapshot;
+class SensorSnapshot;
+
 enum DBusTopSortField
 {
     // DBus Message properties
@@ -173,5 +176,5 @@ typedef void (*DBusTopStatisticsCallback)(DBusTopStatistics*,
 void SetDBusTopStatisticsCallback(DBusTopStatisticsCallback cb);
 void AnalyzerThread();
 // Methods for sending Object Mapper queries
-void ListAllSensors();
+void ListAllSensors(sd_bus*, DBusConnectionSnapshot**, SensorSnapshot**);
 } // namespace dbus_top_analyzer
