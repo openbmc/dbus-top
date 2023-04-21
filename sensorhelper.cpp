@@ -16,11 +16,13 @@
 
 #include "main.hpp"
 
+#include <systemd/sd-bus.h>
 #include <unistd.h>
 
 #include <cassert>
 #include <fstream>
 #include <functional>
+#include <map>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -101,6 +103,7 @@ bool IsUniqueName(const std::string& x)
 }
 
 std::vector<std::string> FindAllObjectPathsForService(
+    sd_bus* bus,
     [[maybe_unused]] const std::string& service,
     [[maybe_unused]] std::function<void(const std::string&,
                                         const std::vector<std::string>&)>
@@ -129,4 +132,27 @@ std::string Trim(const std::string& s)
     if (idx0 >= N || idx1 < 0)
         return "";
     return s.substr(idx0, idx1 - idx0 + 1);
+}
+
+int GetOrInsertPathID(std::map<std::string, int>* lookup, const std::string& path) {
+    if (lookup->find(path) == lookup->end()) {
+        (*lookup)[path] = lookup->size();
+    }
+    return lookup->at(path);
+}
+
+std::string SimplifyPath(std::string s) {
+    const std::string& k = "/xyz/openbmc_project";
+    if (s != k && s.find(k) == 0) { s = s.substr(k.size()); }
+    return s;
+}
+
+std::pair<std::string, std::string> ExtractFileName(std::string x) {
+    size_t idx = x.rfind('/');
+    std::string d = "";
+    if (idx != std::string::npos) {
+        d = x.substr(0, idx);
+        x = x.substr(idx);
+    }
+    return {d, x};
 }

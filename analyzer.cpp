@@ -23,12 +23,15 @@
 #include <unistd.h>
 
 #include <atomic>
+#include <cassert>
 #include <filesystem>
 #include <fstream>
 #include <functional>
 #include <iostream>
 #include <sstream>
 #include <string>
+
+int AcquireBus(sd_bus** ret);
 
 extern SensorSnapshot* g_sensor_snapshot;
 extern DBusConnectionSnapshot* g_connection_snapshot;
@@ -134,6 +137,7 @@ void Finish()
 }
 
 std::vector<std::string> FindAllObjectPathsForService(
+    sd_bus* bus,
     const std::string& service,
     std::function<void(const std::string&, const std::vector<std::string>&)>
         on_interface_cb)
@@ -155,34 +159,29 @@ std::vector<std::string> FindAllObjectPathsForService(
         {
             all_obj_paths.push_back(obj_path);
             int r = sd_bus_message_new_method_call(
-                g_bus, &m, service.c_str(), obj_path.c_str(),
+                bus, &m, service.c_str(), obj_path.c_str(),
                 "org.freedesktop.DBus.Introspectable", "Introspect");
             if (r < 0)
             {
-                printf("Oh! Cannot create new method call. r=%d, strerror=%s\n",
-                       r, strerror(-r));
                 continue;
             }
-            r = sd_bus_call(g_bus, m, 0, &err, &reply);
+            r = sd_bus_call(bus, m, 0, &err, &reply);
             if (r < 0)
             {
-                printf("Could not execute method call, r=%d, strerror=%s\n", r,
-                       strerror(-r));
+                continue;
             }
             const char* sig = sd_bus_message_get_signature(reply, 0);
             if (!strcmp(sig, "s"))
             {
                 const char* s;
                 int r = sd_bus_message_read(reply, "s", &s);
-                std::string s1(s);
                 if (r < 0)
                 {
-                    printf("Could not read string payload, r=%d, strerror=%s\n",
-                           r, strerror(-r));
+                    continue;
                 }
                 else
                 {
-                    XMLNode* t = ParseXML(s1);
+                    XMLNode* t = ParseXML(std::string(s));
                     std::vector<std::string> ch = t->GetChildNodeNames();
                     if (on_interface_cb != nullptr)
                     {
@@ -207,12 +206,17 @@ std::vector<std::string> FindAllObjectPathsForService(
     return all_obj_paths;
 }
 
-void ListAllSensors()
+void ListAllSensors(sd_bus* bus,
+                    DBusConnectionSnapshot** cxn_snapshot,
+                    SensorSnapshot** sensor_snapshot)
 {
-    g_connection_snapshot = new DBusConnectionSnapshot();
-    printf("1. Getting names\n");
+    // Craete new snapshots
+    (*cxn_snapshot) = new DBusConnectionSnapshot();
+    (*sensor_snapshot) = new SensorSnapshot(*cxn_snapshot);
+
+    // 1. List DBus names
     char** names;
-    int r = sd_bus_list_names(g_bus, &names, nullptr);
+    int r = sd_bus_list_names(bus, &names, nullptr);
     std::vector<std::string> services;
     std::vector<int> pids;
     std::vector<std::string> comms;
@@ -222,12 +226,13 @@ void ListAllSensors()
         free(*ptr);
     }
     free(names);
-    printf("2. Getting creds of each name\n");
+
+    // 2. Get creds for each name
     for (int i = 0; i < static_cast<int>(services.size()); i++)
     {
         const std::string& service = services[i];
         sd_bus_creds* creds = nullptr;
-        r = sd_bus_get_name_creds(g_bus, services[i].c_str(),
+        r = sd_bus_get_name_creds(bus, services[i].c_str(),
                                   SD_BUS_CREDS_AUGMENT | SD_BUS_CREDS_EUID |
                                       SD_BUS_CREDS_PID | SD_BUS_CREDS_COMM |
                                       SD_BUS_CREDS_UNIQUE_NAME |
@@ -238,7 +243,6 @@ void ListAllSensors()
         int pid = INVALID;
         if (r < 0)
         {
-            printf("Oh! Cannot get creds for %s\n", services[i].c_str());
         }
         else
         {
@@ -268,81 +272,59 @@ void ListAllSensors()
         {
             connection = u;
         }
-        else
-        {
-            printf("Oh! Could not get unique name for %s\n", service.c_str());
-        }
         std::string unit;
         r = sd_bus_creds_get_unit(creds, &u);
         if (r >= 0)
         {
             unit = u;
         }
-        else
-        {
-            printf("Oh! Could not get unit name for %s\n", unit.c_str());
-        }
-        printf("AddConnection    %s    %s    %s    %s    %d\n", service.c_str(),
-               connection.c_str(), comm.c_str(), unit.c_str(), pid);
-        g_connection_snapshot->AddConnection(service, connection, comm, unit,
+        (*cxn_snapshot)->AddConnection(service, connection, comm, unit,
                                              pid);
-    }
-    printf("There are %d DBus names.\n", int(services.size()));
-    for (int i = 0; i < int(services.size()); i++)
-    {
-        printf("    %d: %s [%s]\n", i, services[i].c_str(), comms[i].c_str());
     }
     g_sensor_snapshot = new SensorSnapshot(g_connection_snapshot);
     // busctl call xyz.openbmc_project.ObjectMapper /
     // org.freedesktop.DBus.Introspectable Introspect
-    printf("3. See which sensors are visible from Object Mapper\n");
-    printf("3.1. Introspect Object Mapper for object paths\n");
+
+    // 3. See which sensors are visible from Object Mapper
+    // 3.1. Introspect Object Mapper for object paths
     std::vector<std::string> all_obj_paths = FindAllObjectPathsForService(
+        bus,
         "xyz.openbmc_project.ObjectMapper", nullptr);
     sd_bus_error err = SD_BUS_ERROR_NULL;
     sd_bus_message *m, *reply;
-    printf("%d paths found while introspecting ObjectMapper.\n",
-           int(all_obj_paths.size()));
-    printf("3.2. Call ObjectMapper's GetObject method against the sensor "
-           "object paths that represent sensors\n");
+    // 3.2. Call ObjectMapper's GetObject method against the sensor object paths that represent sensors
     for (const std::string& p : all_obj_paths)
     {
         if (IsSensorObjectPath(p))
         {
             err = SD_BUS_ERROR_NULL;
             r = sd_bus_message_new_method_call(
-                g_bus, &m, "xyz.openbmc_project.ObjectMapper",
+                bus, &m, "xyz.openbmc_project.ObjectMapper",
                 "/xyz/openbmc_project/object_mapper",
                 "xyz.openbmc_project.ObjectMapper", "GetObject");
             if (r < 0)
             {
-                printf("Cannot create new method call. r=%d, strerror=%s\n", r,
-                       strerror(-r));
                 continue;
             }
             r = sd_bus_message_append_basic(m, 's', p.c_str());
             if (r < 0)
             {
-                printf("Could not append a string parameter to m\n");
                 continue;
             }
             // empty array
             r = sd_bus_message_open_container(m, 'a', "s");
             if (r < 0)
             {
-                printf("Could not open a container for m\n");
                 continue;
             }
             r = sd_bus_message_close_container(m);
             if (r < 0)
             {
-                printf("Could not close container for m\n");
                 continue;
             }
             r = sd_bus_call(g_bus, m, 0, &err, &reply);
             if (r < 0)
             {
-                printf("Error performing dbus method call\n");
             }
             const char* sig = sd_bus_message_get_signature(reply, 0);
             if (!strcmp(sig, "a{sas}"))
@@ -350,7 +332,6 @@ void ListAllSensors()
                 r = sd_bus_message_enter_container(reply, 'a', "{sas}");
                 if (r < 0)
                 {
-                    printf("Could not enter the level 0 array container\n");
                     continue;
                 }
                 while (true)
@@ -359,8 +340,6 @@ void ListAllSensors()
                         reply, SD_BUS_TYPE_DICT_ENTRY, "sas");
                     if (r < 0)
                     {
-                        // printf("Could not enter the level 1 dict
-                        // container\n");
                         goto DONE;
                     }
                     else if (r == 0)
@@ -374,14 +353,11 @@ void ListAllSensors()
                                                       &interface_map_first);
                         if (r < 0)
                         {
-                            printf("Could not read interface_map_first\n");
                             goto DONE;
                         }
                         r = sd_bus_message_enter_container(reply, 'a', "s");
                         if (r < 0)
                         {
-                            printf("Could not enter the level 2 array "
-                                   "container\n");
                             goto DONE;
                         }
                         bool has_value_interface = false;
@@ -392,13 +368,11 @@ void ListAllSensors()
                                 reply, 's', &interface_map_second);
                             if (r < 0)
                             {
-                                printf("Could not read interface_map_second\n");
                             }
                             else if (r == 0)
                                 break;
                             else
                             {
-                                // printf("    %s\n", interface_map_second);
                                 if (!strcmp(interface_map_second,
                                             "xyz.openbmc_project.Sensor.Value"))
                                 {
@@ -421,7 +395,159 @@ void ListAllSensors()
         {}
         }
     }
-    printf("4. Check Hwmon's DBus objects\n");
+
+    // 3.5: Find all objects under ObjectMapper that implement the xyz.openbmc_project.Association interface
+    // busctl call xyz.openbmc_project.ObjectMapper
+    //   /xyz/openbmc_project/object_mapper xyz.openbmc_project.ObjectMapper
+    //   GetSubTreePaths sias /xyz/openbmc_project/inventory 0 1 xyz.openbmc_project.Association
+    err = SD_BUS_ERROR_NULL;
+    r = sd_bus_message_new_method_call(
+        bus, &m, "xyz.openbmc_project.ObjectMapper",
+        "/xyz/openbmc_project/object_mapper",
+        "xyz.openbmc_project.ObjectMapper",
+        "GetSubTreePaths");
+    if (r < 0) { assert(0); }
+    r = sd_bus_message_append_basic(m, 's', "/"); if (r < 0) { assert(0); }
+    const int zero = 0;
+    r = sd_bus_message_append_basic(m, 'i', &zero); if (r < 0) { assert(0); }
+    r = sd_bus_message_open_container(m, 'a', "s"); if (r < 0) { assert(0); }
+    r = sd_bus_message_append_basic(m, 's', "xyz.openbmc_project.Association"); if (r < 0) { assert(0); }
+    r = sd_bus_message_close_container(m); if (r < 0) { assert(0); }
+    r = sd_bus_call(bus, m, 0, &err, &reply); if (r < 0) { assert(0); }
+    const char* sig = sd_bus_message_get_signature(reply, 0);
+    if (strcmp(sig, "as")) { assert(0); }
+    r = sd_bus_message_enter_container(reply, 'a', "s"); if (r < 0) { assert(0); }
+    std::set<std::string> assoc_paths;
+    while (true) {
+        const char* p;
+        r = sd_bus_message_read_basic(reply, 's', &p);
+        if (r <= 0) break;
+        else { assoc_paths.insert(p); }
+    }
+    r = sd_bus_message_exit_container(reply); if (r < 0) { assert(0); }
+
+    // 3.6: Examine the objects in assoc_paths
+    // Example:
+    // busctl call xyz.openbmc_project.ObjectMapper
+    // /xyz/openbmc_project/sensors/voltage/XXX/inventory
+    // org.freedesktop.DBus.Properties
+    // Get ss xyz.openbmc_project.Association endpoints
+    for (const std::string& assoc_path : assoc_paths) {
+        err = SD_BUS_ERROR_NULL;
+        r = sd_bus_message_new_method_call(
+            bus, &m, "xyz.openbmc_project.ObjectMapper",
+            assoc_path.c_str(),
+            "org.freedesktop.DBus.Properties", "Get"
+        );
+        r = sd_bus_message_append_basic(m, 's', "xyz.openbmc_project.Association"); if (r < 0) { assert(0); }
+        r = sd_bus_message_append_basic(m, 's', "endpoints"); if (r < 0) { assert(0); }
+        r = sd_bus_call(bus, m, 0, &err, &reply);
+        if (r < 0) { 
+            // The object may not have any endpoints
+            continue;
+        }
+        const char* sig = sd_bus_message_get_signature(reply, 0);
+        if (strcmp(sig, "v")) { assert(0); }
+        r = sd_bus_message_enter_container(reply, 'v', "as"); if (r < 0) { assert(0); }
+        r = sd_bus_message_enter_container(reply, 'a', "s"); if (r < 0) { assert(0); }
+        std::set<std::string> entries;
+        while (true) {
+            const char* p;
+            r = sd_bus_message_read_basic(reply, 's', &p);
+            if (r <= 0) break;
+            entries.insert(p);
+        }
+        r = sd_bus_message_exit_container(reply); if (r < 0) { assert(0); }
+        r = sd_bus_message_exit_container(reply); if (r < 0) { assert(0); }
+
+        (*sensor_snapshot)->AddAssociationEndpoints(assoc_path, entries);
+    }
+
+    // 3.7: Store the Association Definitions
+    // busctl call xyz.openbmc_project.ObjectMapper 
+    // /xyz/openbmc_project/object_mapper xyz.openbmc_project.ObjectMapper
+    // GetSubTree sias / 0 1 xyz.openbmc_project.Association.Definitions
+    // Returns a{sa{sas}}
+    err = SD_BUS_ERROR_NULL;
+    r = sd_bus_message_new_method_call(
+        bus, &m, "xyz.openbmc_project.ObjectMapper",
+        "/xyz/openbmc_project/object_mapper",
+        "xyz.openbmc_project.ObjectMapper",
+        "GetSubTree"
+    );
+    std::vector<std::pair<std::string, std::string>> services_and_objects;  // Record the Associations from those pairs
+    r = sd_bus_message_append_basic(m, 's', "/"); if (r < 0) { assert(0); }
+    r = sd_bus_message_append_basic(m, 'i', &zero); if (r < 0) { assert(0); }
+    r = sd_bus_message_open_container(m, 'a', "s"); if (r < 0) { assert(0); }
+    r = sd_bus_message_append_basic(m, 's', "xyz.openbmc_project.Association.Definitions"); if (r < 0) { assert(0); }
+    r = sd_bus_message_close_container(m); if (r < 0) { assert(0); }
+    r = sd_bus_call(bus, m, 0, &err, &reply); if (r < 0) { assert(0); }
+    sig = sd_bus_message_get_signature(reply, 0);
+    if (strcmp(sig, "a{sa{sas}}")) { assert(0); }
+    r = sd_bus_message_enter_container(reply, 'a', "{sa{sas}}"); if (r <= 0) { assert(0); }
+    while (true) {
+        r = sd_bus_message_enter_container(reply, 'e', "sa{sas}"); if (r <= 0) { 
+            break; }  // e denotes 'dict entry'
+        const char* p;  // path
+        r = sd_bus_message_read_basic(reply, 's', &p);
+        if (r <= 0) break;
+        r = sd_bus_message_enter_container(reply, 'a', "{sas}"); if (r <= 0) { assert(0); }
+        while (true) {
+            const char* service; // service
+            r = sd_bus_message_enter_container(reply, 'e', "sas"); if (r <= 0) { 
+                break; }
+            r = sd_bus_message_read_basic(reply, 's', &service); if (r < 0) { assert(0); }
+            services_and_objects.emplace_back(std::string(service), std::string(p));
+            r = sd_bus_message_enter_container(reply, 'a', "s"); if (r <= 0) { assert(0); }
+            while (true) {
+                const char* iface;
+                r = sd_bus_message_read_basic(reply, 's', &iface); if (r <= 0) {
+                    break;
+                }
+            }
+            r = sd_bus_message_exit_container(reply); if (r < 0) { assert(0); }  // exit a
+            r = sd_bus_message_exit_container(reply); if (r < 0) { assert(0); }  // exit e
+        }
+        r = sd_bus_message_exit_container(reply); if (r < 0) { assert(0); }  // exit a
+        r = sd_bus_message_exit_container(reply); if (r < 0) { assert(0); }  // exit e
+    }
+    r = sd_bus_message_exit_container(reply); if (r < 0) { assert(0); }  // exit a
+
+    //printf("%lu entries in services_and_objects\n", services_and_objects.size());
+
+    // 3.7.1: Obtain the Associations for the above objects
+    // busctl call xyz.openbmc_project.PSUSensor  
+    // /xyz/openbmc_project/sensors/current/XXXX 
+    // org.freedesktop.DBus.Properties Get ss 
+    //  xyz.openbmc_project.Association.Definitions Associations
+    for (const std::pair<std::string, std::string>& serv_and_obj : services_and_objects) {
+        //printf("Finding associations under %s, %s\n",
+        //    serv_and_obj.first.c_str(), serv_and_obj.second.c_str());
+        err = SD_BUS_ERROR_NULL;
+        r = sd_bus_message_new_method_call(
+            bus, &m, serv_and_obj.first.c_str(),
+            serv_and_obj.second.c_str(), "org.freedesktop.DBus.Properties", "Get");
+        if (r < 0) { assert(0); }
+        r = sd_bus_message_append_basic(m, 's', "xyz.openbmc_project.Association.Definitions"); if (r < 0) { assert(0); }
+        r = sd_bus_message_append_basic(m, 's', "Associations"); if (r < 0) { assert(0); }
+        r = sd_bus_call(bus, m, 0, &err, &reply); if (r <= 0) { continue; }
+        sig = sd_bus_message_get_signature(reply, 0);
+        if (strcmp(sig, "v")) { assert(0); }
+        r = sd_bus_message_enter_container(reply, 'v', "a(sss)"); if (r <= 0) { continue; }
+        r = sd_bus_message_enter_container(reply, 'a', "(sss)"); if (r <= 0) { continue; }
+        while (true) {
+            r = sd_bus_message_enter_container(reply, 'r', "sss"); if (r <= 0) { break; }  // struct
+            const char* forward, *reverse, *endpoint;
+            r = sd_bus_message_read_basic(reply, 's', &forward); if (r < 0) { break; }
+            r = sd_bus_message_read_basic(reply, 's', &reverse); if (r < 0) { assert(0); }
+            r = sd_bus_message_read_basic(reply, 's', &endpoint); if (r < 0) { assert(0); }
+            (*sensor_snapshot)->AddAssociationDefinition(serv_and_obj.second, std::string(forward), std::string(reverse), std::string(endpoint));
+            r = sd_bus_message_exit_container(reply); if (r < 0) { assert(0); }  // exit struct
+        }
+        r = sd_bus_message_exit_container(reply); if (r < 0) { assert(0); }  // exit a
+        r = sd_bus_message_exit_container(reply); if (r < 0) { assert(0); }  // exit v
+    }
+
     for (int i = 0; i < int(comms.size()); i++)
     {
         const std::string& comm = comms[i];
@@ -431,7 +557,7 @@ void ListAllSensors()
         {
             // printf("Should introspect %s\n", service.c_str());
             std::vector<std::string> objpaths =
-                FindAllObjectPathsForService(service, nullptr);
+                FindAllObjectPathsForService(bus, service, nullptr);
             for (const std::string& op : objpaths)
             {
                 if (IsSensorObjectPath(op))
@@ -441,8 +567,8 @@ void ListAllSensors()
             }
         }
     }
-    // Call `ipmitool sdr list` and see which sensors exist.
-    printf("5. Checking ipmitool SDR List\n");
+
+    // 5. Call `ipmitool sdr list` and see which sensors exist.
     std::string out;
     bool skip_sdr_list = false;
     if (getenv("SKIP"))
@@ -476,8 +602,6 @@ void ListAllSensors()
         else
             break;
     }
-    printf("=== Sensors snapshot summary: ===\n");
-    g_sensor_snapshot->PrintSummary();
 }
 } // namespace dbus_top_analyzer
 
