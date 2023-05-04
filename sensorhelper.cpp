@@ -30,13 +30,13 @@
 extern SensorSnapshot* g_sensor_snapshot;
 extern DBusConnectionSnapshot* g_connection_snapshot;
 
-std::vector<std::string> MySplit(const std::string& s)
+std::vector<std::string> MySplit(const std::string& s, const char delim)
 {
     int idx = 0, prev_idx = 0;
     std::vector<std::string> ret;
     while (idx <= static_cast<int>(s.size()))
     {
-        if (idx == static_cast<int>(s.size()) || s[idx] == '/')
+        if (idx == static_cast<int>(s.size()) || s[idx] == delim)
         {
             if (idx > prev_idx)
             {
@@ -163,4 +163,15 @@ std::pair<std::string, std::string> ExtractFileName(std::string x)
         x = x.substr(idx);
     }
     return {d, x};
+}
+
+std::string ExtractOFNodePathUsedByHwmon(const std::string& s)
+{
+    constexpr std::string_view NEEDLE = "firmware/devicetree/base";
+    std::string::size_type idx = s.find(NEEDLE);
+    if (idx != std::string::npos)
+    {
+        return s.substr(idx + NEEDLE.size());
+    }
+    return "";
 }

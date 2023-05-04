@@ -568,6 +568,23 @@ void SensorDetailView::Render()
                     y++;
                     mvwprintw(win, y, x, "Not used as reverse vertex");
                 }
+
+                if (sensor->hwmon_directory_.has_value())
+                {
+                    y += 2;
+                    mvwprintw(win, y, x, "Hwmon path:");
+                    y++;
+                    snprintf(buf, sizeof(buf), "%s",
+                             sensor->hwmon_directory_.value().c_str());
+                    y += DrawTextWithWidthLimit(win, buf, y, x, w, "/");
+                }
+                else
+                {
+                    y += 2;
+                    mvwprintw(win, y, x, "No Hwmon path.");
+                }
+
+                y += 2;
             }
         }
         else
