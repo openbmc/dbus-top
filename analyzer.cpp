@@ -779,7 +779,25 @@ void ListAllSensors(sd_bus* bus, DBusConnectionSnapshot** cxn_snapshot,
         } // exit v
     }
 
-    g_footer_view->SetStatusString("7. Check HWMon DBus objects");
+    std::unordered_map<std::string, std::string> ofnode2hwmon;
+
+    g_footer_view->SetStatusString("7. Scanning hwmon directories");
+    DBusTopUpdateFooterView();
+    constexpr const char* HWMON_ROOT = "/sys/class/hwmon";
+    for (const auto& hwmon_entry :
+         std::filesystem::directory_iterator(HWMON_ROOT))
+    {
+        const std::string& path = hwmon_entry.path();
+        const std::string& ofnode = path + "/device/of_node";
+        if (std::filesystem::exists(ofnode))
+        {
+            std::string linked = std::filesystem::read_symlink(ofnode);
+            std::string ofnode_for_hwmon = ExtractOFNodePathUsedByHwmon(linked);
+            ofnode2hwmon[ofnode_for_hwmon] = path;
+        }
+    }
+
+    g_footer_view->SetStatusString("8. Check HWMon DBus objects");
     DBusTopUpdateFooterView();
     for (size_t i = 0; i < comms.size(); i++)
     {
@@ -790,19 +808,29 @@ void ListAllSensors(sd_bus* bus, DBusConnectionSnapshot** cxn_snapshot,
                                            std::to_string(N));
             DBusTopUpdateFooterView();
         }
-        const std::string& comm = comms[i];
+        std::string comm = Trim(comms[i]);
         const std::string& service = services[i];
         if (comm.find("phosphor-hwmon-readd") != std::string::npos &&
             !IsUniqueName(service))
         {
-            // printf("Should introspect %s\n", service.c_str());
-            std::vector<std::string> objpaths =
-                FindAllObjectPathsForService(bus, service, nullptr);
-            for (const std::string& op : objpaths)
+            std::vector<std::string> sp = MySplit(comm, ' ');
+            if (sp.size() == 3 && sp[0] == "phosphor-hwmon-readd" &&
+                sp[1] == "-o")
             {
-                if (IsSensorObjectPath(op))
+                if (ofnode2hwmon.find(sp[2]) != ofnode2hwmon.end())
                 {
-                    (*sensor_snapshot)->SetSensorVisibleFromHwmon(service, op);
+                    std::string hwmon_path = ofnode2hwmon.at(sp[2]);
+                    std::vector<std::string> objpaths =
+                        FindAllObjectPathsForService(bus, service, nullptr);
+                    for (const std::string& op : objpaths)
+                    {
+                        if (IsSensorObjectPath(op))
+                        {
+                            (*sensor_snapshot)
+                                ->SetSensorVisibleFromHwmon(service, op,
+                                                            hwmon_path);
+                        }
+                    }
                 }
             }
         }
