@@ -27,6 +27,9 @@
 #include <vector>
 
 std::pair<std::string, std::string> ExtractFileName(std::string x);
+std::vector<std::string> MySplit(const std::string& s, const char delim = '/');
+std::string ExtractOFNodePathUsedByHwmon(const std::string& s);
+
 // Where is this sensor seen?
 constexpr int VISIBILITY_OBJECT_MAPPER = 0;
 constexpr int VISIBILITY_HWMON = 1;
@@ -208,6 +211,7 @@ class Sensor
     std::set<std::string> interfaces_;
     std::bitset<4> visibility_flags_;
     std::set<std::string> associations_;
+    std::optional<std::string> hwmon_directory_;
 };
 
 class SensorSnapshot
@@ -300,12 +304,14 @@ class SensorSnapshot
         s->visibility_flags_.set(VISIBILITY_OBJECT_MAPPER);
     }
 
-    // This sensor is visible from Hwmon
+    // This sensor is visible from which /sys/class/hwmon?
     void SetSensorVisibleFromHwmon(const std::string& service,
-                                   const std::string& object)
+                                   const std::string& object,
+                                   const std::string& hwmon_path)
     {
         Sensor* s = FindOrCreateSensorByServiceAndObject(service, object);
         s->visibility_flags_.set(VISIBILITY_HWMON);
+        s->hwmon_directory_ = hwmon_path;
     }
 
     // This sensor is visible from `ipmitool sdr`
