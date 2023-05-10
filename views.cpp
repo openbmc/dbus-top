@@ -254,7 +254,7 @@ void DrawHistogram(WINDOW* win, const Rect& rect, Histogram<T>* histogram)
         float y_frac = lines_visible - static_cast<int>(lines_visible);
         char ch; // Last filling character
         if (y >= hist_ymin)
-        { // At the maximum bucket the Y overflows, so skip
+        {        // At the maximum bucket the Y overflows, so skip
             if (y_frac >= 0.66f)
             {
                 ch = ':';
@@ -1115,8 +1115,8 @@ void DBusStatListView::Render()
                     };
                     int the_sum = 0; // For sorting
 
-                    std::string s; // String representation in the form or
-                                   // "1.00/2.00/3.00/4.00"
+                    std::string s;   // String representation in the form or
+                                     // "1.00/2.00/3.00/4.00"
                     for (int i = 0; i < 4; i++)
                     {
                         the_sum += numbers[i];

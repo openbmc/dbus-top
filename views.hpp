@@ -422,7 +422,7 @@ class DBusStatListView : public DBusTopWindow
     int highlight_col_idx_; // Currently highlighted column
     int row_idx_;           // Currently highlighted row
 
-    int sort_col_idx_; // Column used for sorting
+    int sort_col_idx_;      // Column used for sorting
     enum SortOrder
     {
         Ascending,

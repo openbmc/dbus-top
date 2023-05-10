@@ -917,13 +917,13 @@ void DBusTopStatistics::OnNewDBusMessage(const char* sender,
     }
     // Update global latency histogram
     // For method call latency
-    if (type == 1) // DBUS_MESSAGE_TYPE_METHOD_CALL
+    if (type == 1)       // DBUS_MESSAGE_TYPE_METHOD_CALL
     {
         uint64_t serial; // serial == cookie
         sd_bus_message_get_cookie(m, &serial);
         in_flight_methodcalls[serial] = Microseconds();
     }
-    else if (type == 2) // DBUS_MESSAGE_TYPE_MEHOTD_RETURN
+    else if (type == 2)            // DBUS_MESSAGE_TYPE_MEHOTD_RETURN
     {
         uint64_t reply_serial = 0; // serial == cookie
         sd_bus_message_get_reply_cookie(m, &reply_serial);
