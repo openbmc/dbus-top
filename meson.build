@@ -16,8 +16,9 @@ project('dbus-top', 'cpp',
     version: '0.1',
     default_options:
     [
-        'cpp_std=c++17',
+        'cpp_std=c++23',
     ],
+    meson_version: '>=1.1.1',
 )
 
 bindir = get_option('prefix') / get_option('bindir')
