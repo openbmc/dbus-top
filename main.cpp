@@ -22,12 +22,12 @@
 #include "sensorhelper.hpp"
 #include "views.hpp"
 
-#include <fmt/printf.h>
 #include <ncurses.h>
 #include <stdio.h>
 #include <unistd.h>
 
 #include <cassert>
+#include <format>
 #include <iomanip>
 #include <mutex>
 #include <sstream>
@@ -171,7 +171,7 @@ void UpdateWindowSizes()
 
 std::string FloatToString(float value)
 {
-    return fmt::sprintf("%.2f", value);
+    return std::format("{:.2f}", value);
 }
 
 void DBusTopRefresh()

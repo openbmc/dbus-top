@@ -38,7 +38,6 @@ executable('dbus-top',
         dependency('sdbusplus'),
         dependency('ncurses'),
         dependency('threads'),
-        dependency('fmt')
     ],
     install: true,
     install_dir: bindir
