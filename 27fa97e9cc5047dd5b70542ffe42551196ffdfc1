@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "03d4e4c6_700e2af4",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000500
+      },
+      "writtenOn": "2023-07-16T17:19:19Z",
+      "side": 1,
+      "message": "I tested locally, this change builds and works and looks good.",
+      "revId": "27fa97e9cc5047dd5b70542ffe42551196ffdfc1",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
