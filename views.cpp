@@ -1171,7 +1171,7 @@ void DBusStatListView::Render()
             [](const std::pair<StringOrFloat, std::vector<std::string>>& a,
                const std::pair<StringOrFloat, std::vector<std::string>>& b) {
             return a.first.f < b.first.f;
-            });
+        });
     }
     else
     {
@@ -1180,7 +1180,7 @@ void DBusStatListView::Render()
             [](const std::pair<StringOrFloat, std::vector<std::string>>& a,
                const std::pair<StringOrFloat, std::vector<std::string>>& b) {
             return a.first.s < b.first.s;
-            });
+        });
     }
 
     if (sort_order_ == Descending)
