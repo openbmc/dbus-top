@@ -1,0 +1,7 @@
+Code-Review+2: Sui Chen <suichen6@gmail.com>
+Verified+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Submitted-by: Patrick Williams <patrick@stwcx.xyz>
+Submitted-at: Sat, 21 Oct 2023 18:38:26 +0000
+Reviewed-on: https://gerrit.openbmc.org/c/openbmc/dbus-top/+/67273
+Project: openbmc/dbus-top
+Branch: refs/heads/main
