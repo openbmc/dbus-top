@@ -615,7 +615,7 @@ void ListAllSensors(sd_bus* bus, DBusConnectionSnapshot** cxn_snapshot,
         if (r <= 0)
         {
             break;
-        }              // e denotes 'dict entry'
+        } // e denotes 'dict entry'
         const char* p; // path
         r = sd_bus_message_read_basic(reply, 's', &p);
         if (r <= 0)
