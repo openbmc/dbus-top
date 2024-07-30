@@ -1,10 +1,10 @@
 # Design Doc for dbus-top
 
-Author: Adedeji Adebisi (ziniblessed@google.com)
+Author: Adedeji Adebisi <ziniblessed@google.com>
 
 Primary Assignee: Adedeji Adebisi
 
-Other contributors: Sui Chen (suichen@google.com) Alex Qiu (xqiu@google.com)
+Other contributors: Sui Chen <suichen@google.com>, Alex Qiu <xqiu@google.com>
 
 Created: May 17, 2021
 
