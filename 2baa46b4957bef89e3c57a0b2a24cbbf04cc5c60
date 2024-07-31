@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "234928be_9446f9ea",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2024-07-31T05:53:04Z",
+      "side": 1,
+      "message": "Can we get rid of the parentheses (`()`) and leave just `\u003cziniblessed@google.com\u003e`?\n\nSame below.",
+      "revId": "2baa46b4957bef89e3c57a0b2a24cbbf04cc5c60",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b0d975a7_c46eaa84",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2024-07-31T05:53:04Z",
+      "side": 1,
+      "message": "Can we separate these two with a comma (`,`)? So:\n\n```\nOther contributors: Sui Chen \u003csuichen@google.com\u003e, Alex Qiu \u003cxqiu@google.com\u003e\n```",
+      "range": {
+        "startLine": 7,
+        "startChar": 51,
+        "endLine": 7,
+        "endChar": 52
+      },
+      "revId": "2baa46b4957bef89e3c57a0b2a24cbbf04cc5c60",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
