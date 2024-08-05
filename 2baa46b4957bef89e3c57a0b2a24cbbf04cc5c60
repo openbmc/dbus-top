@@ -18,6 +18,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5af33bba_9478f88f",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1000397
+      },
+      "writtenOn": "2024-08-05T00:43:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "234928be_9446f9ea",
+      "revId": "2baa46b4957bef89e3c57a0b2a24cbbf04cc5c60",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b0d975a7_c46eaa84",
@@ -31,6 +49,30 @@
       "writtenOn": "2024-07-31T05:53:04Z",
       "side": 1,
       "message": "Can we separate these two with a comma (`,`)? So:\n\n```\nOther contributors: Sui Chen \u003csuichen@google.com\u003e, Alex Qiu \u003cxqiu@google.com\u003e\n```",
+      "range": {
+        "startLine": 7,
+        "startChar": 51,
+        "endLine": 7,
+        "endChar": 52
+      },
+      "revId": "2baa46b4957bef89e3c57a0b2a24cbbf04cc5c60",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e14a1cf1_d29d7ffb",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000397
+      },
+      "writtenOn": "2024-08-05T00:43:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b0d975a7_c46eaa84",
       "range": {
         "startLine": 7,
         "startChar": 51,
