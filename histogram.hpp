@@ -116,8 +116,8 @@ class Histogram
             else
             {
                 buckets_[bucket_idx]++;
-                max_bucket_height_ = std::max(max_bucket_height_,
-                                              buckets_[bucket_idx]);
+                max_bucket_height_ =
+                    std::max(max_bucket_height_, buckets_[bucket_idx]);
             }
         }
     }

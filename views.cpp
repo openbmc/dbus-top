@@ -114,9 +114,9 @@ void HistoryBarGraph(WINDOW* win, const Rect& rect, BarGraph<T>* bargraph)
         snap = 1000;
     }
     const float eps = snap / 100.0f;
-    int label_ymax = (static_cast<int>((ymax - eps) / snap) + 1) *
-                     snap;                                 // round up
-    int label_ymin = static_cast<int>(ymin / snap) * snap; // round down
+    int label_ymax =
+        (static_cast<int>((ymax - eps) / snap) + 1) * snap; // round up
+    int label_ymin = static_cast<int>(ymin / snap) * snap;  // round down
     float y_per_row = (label_ymax - label_ymin) * 1.0f / (h - 1);
     int actual_ymax = label_ymax + static_cast<int>(y_per_row / 2);
     int actual_ymin = label_ymin - static_cast<int>(y_per_row / 2);
@@ -1146,8 +1146,8 @@ void DBusStatListView::Render()
                     }
                     else
                     {
-                        float avg_latency_usec = m.total_latency_usec /
-                                                 m.num_method_calls;
+                        float avg_latency_usec =
+                            m.total_latency_usec / m.num_method_calls;
                         row.push_back(FloatToString(avg_latency_usec));
                         sof.f = avg_latency_usec;
                     }
@@ -1170,8 +1170,8 @@ void DBusStatListView::Render()
             stats_snapshot_staged.begin(), stats_snapshot_staged.end(),
             [](const std::pair<StringOrFloat, std::vector<std::string>>& a,
                const std::pair<StringOrFloat, std::vector<std::string>>& b) {
-            return a.first.f < b.first.f;
-        });
+                return a.first.f < b.first.f;
+            });
     }
     else
     {
@@ -1179,8 +1179,8 @@ void DBusStatListView::Render()
             stats_snapshot_staged.begin(), stats_snapshot_staged.end(),
             [](const std::pair<StringOrFloat, std::vector<std::string>>& a,
                const std::pair<StringOrFloat, std::vector<std::string>>& b) {
-            return a.first.s < b.first.s;
-        });
+                return a.first.s < b.first.s;
+            });
     }
 
     if (sort_order_ == Descending)

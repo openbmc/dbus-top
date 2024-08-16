@@ -116,8 +116,8 @@ void Process()
     if (t >= next_update)
     {
         float seconds_since_last_sample =
-            std::chrono::duration_cast<std::chrono::microseconds>(t -
-                                                                  g_last_update)
+            std::chrono::duration_cast<std::chrono::microseconds>(
+                t - g_last_update)
                 .count() /
             1000000.0f;
         g_dbus_statistics.seconds_since_last_sample_ =
@@ -234,20 +234,20 @@ void ListAllSensors(sd_bus* bus, DBusConnectionSnapshot** cxn_snapshot,
     {
         if (i == N - 1 || (i % 100) == 99)
         {
-            g_footer_view->SetStatusString("2. Getting Creds " +
-                                           std::to_string(i + 1) + "/" +
-                                           std::to_string(N));
+            g_footer_view->SetStatusString(
+                "2. Getting Creds " + std::to_string(i + 1) + "/" +
+                std::to_string(N));
             DBusTopUpdateFooterView();
         }
         const std::string& service = services[i];
         sd_bus_creds* creds = nullptr;
-        r = sd_bus_get_name_creds(bus, services[i].c_str(),
-                                  SD_BUS_CREDS_AUGMENT | SD_BUS_CREDS_EUID |
-                                      SD_BUS_CREDS_PID | SD_BUS_CREDS_COMM |
-                                      SD_BUS_CREDS_UNIQUE_NAME |
-                                      SD_BUS_CREDS_UNIT | SD_BUS_CREDS_SESSION |
-                                      SD_BUS_CREDS_DESCRIPTION,
-                                  &creds);
+        r = sd_bus_get_name_creds(
+            bus, services[i].c_str(),
+            SD_BUS_CREDS_AUGMENT | SD_BUS_CREDS_EUID | SD_BUS_CREDS_PID |
+                SD_BUS_CREDS_COMM | SD_BUS_CREDS_UNIQUE_NAME |
+                SD_BUS_CREDS_UNIT | SD_BUS_CREDS_SESSION |
+                SD_BUS_CREDS_DESCRIPTION,
+            &creds);
         // PID
         int pid = INVALID;
         if (r < 0)
@@ -606,16 +606,16 @@ void ListAllSensors(sd_bus* bus, DBusConnectionSnapshot** cxn_snapshot,
     {
         if (idx % 100 == 99 || idx == N - 1)
         {
-            g_footer_view->SetStatusString("5. Find Association Definitions " +
-                                           std::to_string(idx + 1) + "/" +
-                                           std::to_string(N));
+            g_footer_view->SetStatusString(
+                "5. Find Association Definitions " + std::to_string(idx + 1) +
+                "/" + std::to_string(N));
             DBusTopUpdateFooterView();
         }
         r = sd_bus_message_enter_container(reply, 'e', "sa{sas}");
         if (r <= 0)
         {
             break;
-        }              // e denotes 'dict entry'
+        } // e denotes 'dict entry'
         const char* p; // path
         r = sd_bus_message_read_basic(reply, 's', &p);
         if (r <= 0)
@@ -785,9 +785,9 @@ void ListAllSensors(sd_bus* bus, DBusConnectionSnapshot** cxn_snapshot,
     {
         if (i % 100 == 99 || i == N - 1)
         {
-            g_footer_view->SetStatusString("7. Check HWMon DBus objects " +
-                                           std::to_string(i + 1) + "/" +
-                                           std::to_string(N));
+            g_footer_view->SetStatusString(
+                "7. Check HWMon DBus objects " + std::to_string(i + 1) + "/" +
+                std::to_string(N));
             DBusTopUpdateFooterView();
         }
         const std::string& comm = comms[i];
@@ -813,11 +813,9 @@ void ListAllSensors(sd_bus* bus, DBusConnectionSnapshot** cxn_snapshot,
 }
 } // namespace dbus_top_analyzer
 
-void DBusTopStatistics::OnNewDBusMessage(const char* sender,
-                                         const char* destination,
-                                         const char* interface,
-                                         const char* path, const char* member,
-                                         const char type, sd_bus_message* m)
+void DBusTopStatistics::OnNewDBusMessage(
+    const char* sender, const char* destination, const char* interface,
+    const char* path, const char* member, const char type, sd_bus_message* m)
 {
     num_messages_++;
     std::vector<std::string> keys;
