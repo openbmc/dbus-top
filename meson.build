@@ -34,7 +34,7 @@ executable('dbus-top',
     ],
     dependencies:
     [
-        dependency('systemd'),
+        dependency('libsystemd'),
         dependency('sdbusplus'),
         dependency('ncurses'),
         dependency('threads'),
